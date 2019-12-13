@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会议管理系统管理员界面</title>
+</head>
+<body>
+    <div style="margin: 0 auto;text-align: center">
+        <h1>管理员界面</h1><br>
+        <h3>所有会议</h3><br>
+    </div>
+<div style="text-align: center;margin: 0 auto">
+
+    <table id="show_table" style="margin: 0 auto" border="1">
+<tr>
+    <td>会议名</td>
+    <td>会议时间</td>
+    <td>会议宾馆</td>
+    <td>会议唯一编号</td>
+    <td></td>
+</tr>
+    </table>
+
+</div>
+<div style="margin: 25px auto; ">
+    <h2 align="center">添加会议</h2><br>
+    <table style="margin: 0 auto">
+        <form style="margin: 0 auto"  method="post">
+            <tr>
+                <td>会议名称</td>
+                <td><input type="text" id="confname" ></td>
+            </tr>
+            <tr>
+                <td>会议介绍</td>
+                <td><input type="text" id="confinf"></td>
+            </tr>
+            <tr>
+                <td>会议地点</td>
+                <td><input type="text" id="confplace"></td>
+            </tr>
+            <tr>
+                <td>会议人物</td>
+                <td><input type="text" id="confimg"></td>
+            </tr>
+            <tr>
+                <td>会议宾馆</td>
+                <td><input type="text" id="confhotle"></td>
+            </tr>
+            <tr>
+                <td>要填的信息:</td>
+                <td><input type="checkbox" name="other" id="name">姓名 <br>
+                    <input type="checkbox" name="other" id="until">工作单位<br>
+                    <input type="checkbox" name="other" id="id_card">身份证号 <br>
+                    <input type="checkbox" name="other" id="tel">电话 <br>
+                    <input type="checkbox" name="other" id="date">参会时间<br>
+                    <input type="checkbox" name="other" id="sex">性别<br>
+                    <input type="checkbox" name="other" id="room">是否要安排宾馆<br>
+                </td>
+            </tr>
+    </form>
+        <tr>
+            <td colspan="2" onclick="smit()">  <button >添加</button>  </td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+<script src="/js/jquery.min.js"></script>
+<script>
+    if(sessionStorage.getItem("user"!=="Admin")){
+        document.write("需要管理员才能进入！")
+    }else {
+        $.ajax({
+            url:"getAllConf/",
+            success:function (data) {
+                $.each(data,function (inx, obj) {
+                    $("#show_table").append("<tr>\n" +
+                        "    <td>"+obj.confname +"</td>\n" +
+                        "    <td>"+obj.conftime+"</td>\n" +
+                        "    <td>"+obj.confhotle+"</td>\n" +
+                        "    <td>"+obj.confnum+"</td>\n" +
+                        "    <td><a href='userList/?id="+obj.confid +"'>删除</a></td>\n" +
+                        "</tr>")
+                });
+
+            }
+        })
+    }
+    function smit() {
+        var s='';
+        if ($('#name').prop('checked')) {
+            s+="name "
+        }
+        if ($('#until').prop('checked')) {
+            s+="until "
+        }
+        if ($('#id_card').prop('checked')) {
+            s+="id_card "
+        }
+        if ($('#tel').prop('checked')) {
+            s+="tel "
+        }
+        if ($('#date').prop('checked')) {
+            s+="date "
+        }
+        if ($('#sex').prop('checked')) {
+            s+="sex "
+        }
+        if ($('#room').prop('checked')) {
+            s+="room "
+        }
+        alert(s);
+        var params={
+            'confname':$("#confname").val(),
+            'confinf':$("#confinf").val(),
+            'confplace':$("#confplace").val(),
+            'confhotle':$("#confhotle").val(),
+            'confimg':$("#confimg").val(),
+            'confneed':s
+        };
+        var data = JSON.stringify(params);
+
+        $.post({
+            url:"addConf/",
+            data:data,
+            contentType:'application/json',
+            success:function (data) {
+                alert(data.msg)
+
+            }
+        })
+    }
+</script>
+</html>
