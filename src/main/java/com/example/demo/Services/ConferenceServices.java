@@ -33,4 +33,12 @@ public class ConferenceServices {
         conferenceDao.insertUser(conf);
 
     }
+    public List<Conference> confsForUser(int id){
+
+        return conferenceDao.getConfForSomeOne(id);
+    }
+    public void deleteConf(int id){
+
+        conferenceDao.deleteConf(id);
+    }
 }

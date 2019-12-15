@@ -2,6 +2,7 @@ $(function () {
     var user = sessionStorage.getItem("user");
     if(user!==null){
         $("#username").text(user);
+
         load_conf_list();
     }
     else if(user==="Admin"){
@@ -12,6 +13,18 @@ $(function () {
     }
 });
 function load_conf_list(){
+    $("#navigation").html("<ul class=\"navbar-nav flex-column text-left\">\n" +
+        "\t\t\t\t\t<li class=\"nav-item active\" id=\"conf_list_nav\">\n" +
+        "\t\t\t\t\t    <a class=\"nav-link\" onclick=\"load_conf_list()\"><i class=\"fas fa-list fa-fw mr-2\"></i>会议列表 <span class=\"sr-only\">(current)</span></a>\n" +
+        "\t\t\t\t\t</li>\n" +
+        "\t\t\t\t\t<li class=\"nav-item\">\n" +
+        "\t\t\t\t\t    <a class=\"nav-link\" onclick=\"show_user_inf()\"><i class=\"fas fa-user fa-fw mr-2\" ></i>我报名的会议</a>\n" +
+        "\t\t\t\t\t</li>\n" +
+        "\t\t\t\t</ul>\n" +
+        "\t\t\t\t\n" +
+        "\t\t\t\t<div class=\"my-2 my-md-3\">\n" +
+        "\t\t\t\t    <a class=\"btn btn-primary\" href=\"/\" onclick=\"logout()\">退出登陆</a>");
+    $("#title").text("会议列表");
     $.ajax({
         url:"getAllConf/",
         success:function (data) {
@@ -58,20 +71,21 @@ function load_conf_detail(confid) {
                 "                       </tr>\n" +
                 "\n" +
                 "                   </table>\n" +
-                "                    <button class=\"material-button text-center\" ><a href='exportExcel?confid="+data.confid+"'>导出为excel</a></button>\n" +
+                "                    <button class=\"material-button float-left\" onclick='exportExcel("+ data.confid+")'>导出为excel</button>\n" +
+                "<button class='material-button offset-7' onclick='erweima("+data.confid+")'>生成二维码</button> " +
                 "<div class='container text-center'> " +
                 "                       <h3  class='text-center'>报名此会议需要填写的信息</h3><br>" +
-                "                                                               " +
-                "     " +(data.confneed.match("name")?"姓名：<input type='text' id=\"needname\"> <br>":"")+
-                "" +(data.confneed.match("until")?"单位：<input type='text' id=\"needuntil\"> <br>":"")+
+                "                                                          <table style='margin: 0 auto;'>     " +
+                "     " +(data.confneed.match("name")?"<tr><td>姓名：</td><td><input type='text' id='needname'></td></tr>":"")+
+                "" +(data.confneed.match("until")?"<tr><td>单位：</td><td><input type='tel' id='needuntil'> </td></tr>":"")+
 
-                "" +(data.confneed.match("id_card")?"身份证号：<input type='text' id=\"needid_card\"> <br>":"")+
-                "" +(data.confneed.match("tel")?"电话：<input type='text' id=\"needtel\"> <br>":"")+
-                "" +(data.confneed.match("date")?"日期：<input type='text' id=\"needdate\"> <br>":"")+
-                "" +(data.confneed.match("sex")?"性别：<input type='text' id=\"needsex\"> <br>":"")+
-                "" +(data.confneed.match("room")?"是否安排房间：<input type='text' id=\"needroom\"> <br>":"")+
+                "" +(data.confneed.match("id_card")?"<tr><td>身份证号：</td><td><input type='text' id='needid_card'> </td>":"")+
+                "" +(data.confneed.match("tel")?"<tr><td>电话：</td><td><input type='text' id='needtel'></td></tr>":"")+
+                "" +(data.confneed.match("date")?"<tr><td>日期：</td><td><input type='date' id='needdate'></td></tr>":"")+
+                "" +(data.confneed.match("sex")?"<tr><td>性别：</td><td><select  id='needsex'><option value='男'>男</option><option value='女'>女</option></select> </td></tr>":"")+
+                "" +(data.confneed.match("room")?"<tr><td>是否安排房间：</td><td><select  id='needroom'><option value='是'>是</option><option value='否'>否</option></select></td></tr>":"")+
                 "" +
-                "" + " " +
+                "" + " </table>" +
                 "" +
                 "" +
                 "" +
@@ -87,6 +101,10 @@ function load_conf_detail(confid) {
     });
 
 
+}
+
+function exportExcel(confid) {
+    window.open("exportExcel?confid="+confid)
 }
 
 function baoming(confid) {
@@ -111,6 +129,12 @@ function baoming(confid) {
             alert(data.msg);
         }
     })
+
+}
+
+function erweima(confid) {
+
+    window.open("qrcode/?id="+confid);
 
 }
 
@@ -153,4 +177,74 @@ function logout() {
 
 
 }
+function show_user_inf() {
+    $.post({
+        url:'getMyConfs',
+        data:{
+            "userid":sessionStorage.getItem("userid")
+        },
+        success:function (data) {
+            $("#navigation").html("<ul class=\"navbar-nav flex-column text-left\">\n" +
+                "\t\t\t\t\t<li class=\"nav-item\" id=\"conf_list_nav\">\n" +
+                "\t\t\t\t\t    <a class=\"nav-link\" onclick=\"load_conf_list()\"><i class=\"fas fa-list fa-fw mr-2\"></i>会议列表 <span class=\"sr-only\">(current)</span></a>\n" +
+                "\t\t\t\t\t</li>\n" +
+                "\t\t\t\t\t<li class=\"nav-item active\">\n" +
+                "\t\t\t\t\t    <a class=\"nav-link\" onclick=\"show_user_inf()\"><i class=\"fas fa-user fa-fw mr-2\" ></i>我报名的会议</a>\n" +
+                "\t\t\t\t\t</li>\n" +
+                "\t\t\t\t</ul>\n" +
+                "\t\t\t\t\n" +
+                "\t\t\t\t<div class=\"my-2 my-md-3\">\n" +
+                "\t\t\t\t    <a class=\"btn btn-primary\" href=\"/\" onclick=\"logout()\">退出登陆</a>");
+            $("#title").text("我报名的会议");
+           $("#text_cont").html("" +
+               "" +
+               "<div class='offset-2'>" +
+               "" +
+               "" +
+               "<table class='offset-2' id='myconftable' border='1'>" +
+               "" +
+               "</table>" +
+               "" +
+               "" +
+               "</div>" +
+               "" +
+               "" +
+               "" +
+               "" +
+               "" +
+               "" +
+               "");
+            $.each(data,function (idx, obj) {
+                $("#myconftable").append("" +
+                    "<tr>" +
+                    "<td>"+obj.confname+"</td>" +
+                    "<td><a href='#' onclick='tuixuan("+obj.confid+")'>退选</a></td>" +
+                    "" +
+                    "</tr>" +
+                    "" +
+                    "" +
+                    "")
+            })
+        }
+    })
+}
+function tuixuan(confid) {
+    var attr={
+        'confid':confid,
+        'userid':sessionStorage.getItem("userid")
+    };
+    var data=JSON.stringify(attr);
 
+    $.post({
+        url:"tuixuan/",
+        contentType:'application/json',
+        data:data,
+        success:function (data) {
+            alert(data.msg);
+            history.go(0);
+        }
+    })
+
+
+
+}

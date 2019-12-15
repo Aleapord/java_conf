@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @org.springframework.stereotype.Controller
-public class Controller {
+public class LoginController {
     @Autowired
     private UserService userService;
 
@@ -44,7 +44,8 @@ public class Controller {
             msg = "密码错误！";
         }
         rs.put("msg",msg);
-        rs.put("id",user1.getId());
+        if (user1!=null){
+        rs.put("id",user1.getId());}
         return rs;
     }
     @RequestMapping("reg/")

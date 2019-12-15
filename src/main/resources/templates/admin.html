@@ -74,13 +74,14 @@
         $.ajax({
             url:"getAllConf/",
             success:function (data) {
-                $.each(data,function (inx, obj) {
+                $.each(data,function (idx, obj) {
                     $("#show_table").append("<tr>\n" +
                         "    <td>"+obj.confname +"</td>\n" +
                         "    <td>"+obj.conftime+"</td>\n" +
                         "    <td>"+obj.confhotle+"</td>\n" +
                         "    <td>"+obj.confnum+"</td>\n" +
-                        "    <td><a href='userList/?id="+obj.confid +"'>删除</a></td>\n" +
+                        "    <td><a href='#' onclick='deleteConf("+obj.confid +") '>删除</a></td>\n" +
+                            "<td><a href='#' onclick='regdetail("+obj.confid+")'>查看报名情况</a></td>"+
                         "</tr>")
                 });
 
@@ -110,7 +111,6 @@
         if ($('#room').prop('checked')) {
             s+="room "
         }
-        alert(s);
         var params={
             'confname':$("#confname").val(),
             'confinf':$("#confinf").val(),
@@ -126,8 +126,58 @@
             data:data,
             contentType:'application/json',
             success:function (data) {
-                alert(data.msg)
+                alert(data.msg);
+                history.go(0);
 
+            }
+        })
+    }
+
+    function regdetail(confid) {
+        $.post({
+            url:"regdetail/",
+            data:{
+                'id':confid
+            },
+            success:function (data) {
+                $("body").html("" +
+                    "<a href='#' onclick='history.go(0)'><返回</a>" +
+                        "<center><h1>人员报名情况</h1></center>"+
+                    "  <table id=\"show_table\" style=\"margin: 0 auto\" border=\"1\">\n" +
+                    "<tr>\n" +
+                    "    <td>姓名</td>\n" +
+                    "    <td>工作单位</td>\n" +
+                    "    <td>身份证号</td>\n" +
+                    "    <td>电话</td>\n" +
+                    "    <td>参会时间</td>\n" +
+                    "    <td>性别</td>\n" +
+                    "    <td>是否安排房间</td>\n" +
+                    "</tr>\n" +
+                    "    </table>");
+                $.each(data,function (idx,obj) {
+                    $("#show_table").append("<tr>\n" +
+                        "    <td>"+obj.name+"</td>\n" +
+                        "    <td>"+obj.until+"</td>\n" +
+                        "    <td>"+obj.id_card+"</td>\n" +
+                        "    <td>"+obj.tel+"</td>\n" +
+                        "    <td>"+obj.time+"</td>\n" +
+                        "    <td>"+obj.sex+"</td>\n" +
+                        "    <td>"+obj.room+"</td>\n" +
+                        "</tr>\n")
+                })
+            }
+        })
+    }
+
+    function deleteConf(confid) {
+        $.post({
+            url:"delete/",
+            data:{
+                'id':confid
+            },
+            success:function (data) {
+                alert(data.msg);
+                history.go(0);
             }
         })
     }

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://49.235.167.8:3306/tables
+    url: jdbc:mysql://localhost:3306/tables
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,4 +9,4 @@ spring:
       view:
         suffix: .html
 server:
-  port: 5000
+  port: 9799

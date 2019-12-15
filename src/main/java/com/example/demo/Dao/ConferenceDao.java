@@ -28,4 +28,9 @@ public interface ConferenceDao {
     @Options(useGeneratedKeys = true,keyProperty = "conf.confid")
     void insertUser(@Param("conf") Conference conf);
 
+    @Delete("delete from conference where confid = #{confid}")
+    void deleteConf(@Param("confid") int id);
+
+    @Select("SELECT conference.confid ,confname,conftime,confinf,confplace,confhotle,confnum,confimg,confneed FROM users,conference,conf_user where conf_user.confid=conference.confid and users.id=conf_user.userid and userid=#{userid}")
+    List<Conference> getConfForSomeOne(@Param("userid") int id);
 }

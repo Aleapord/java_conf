@@ -19,6 +19,11 @@ public class Conf_user {
         this.room = room;
     }
 
+    public Conf_user(int userid, int confid) {
+        this.userid = userid;
+        this.confid = confid;
+    }
+
     private String until;
     private String id_card;
     private String tel;
@@ -104,5 +109,20 @@ public class Conf_user {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Conf_user{" +
+                "userid=" + userid +
+                ", confid=" + confid +
+                ", name='" + name + '\'' +
+                ", until='" + until + '\'' +
+                ", id_card='" + id_card + '\'' +
+                ", tel='" + tel + '\'' +
+                ", time=" + time +
+                ", sex='" + sex + '\'' +
+                ", room='" + room + '\'' +
+                '}';
     }
 }
